@@ -25,51 +25,49 @@ class CentralEmbedHandler {
             const channel = await this.client.channels.fetch(channelId);
             
             const embed = new EmbedBuilder()
-            .setAuthor({ name: 'Ultimate Music Control Center', iconURL: 'https://cdn.discordapp.com/emojis/896724352949706762.gif', url: 'https://discord.gg/xQF9f9yUEM' })
+            .setAuthor({ name: 'ไอคิวย์ มิวสิค', iconURL: 'https://cdn.discordapp.com/emojis/896724352949706762.gif', url: 'https://www.facebook.com/share/1Dg1UJB5hC/' })
                 .setDescription([
                     '',
-                    '- Simply type a **song name** or **YouTube link** to start the party!',
-                    '- In free version I only support **YouTube** only.',
+                    '- เพียงแค่พิมพ์ **ชื่อเพลง** หรือ **ลิงก์ YouTube** เพื่อเริ่มเพลง!',
+                    '- รองรับเฉพาะ... **YouTube** เท่านั้น.',
                     '',
-                    '✨ *Ready to fill this place with amazing music?*'
+                    '✨ *พร้อมที่จะเติมเต็มสถานที่แห่งนี้ด้วยเสียงเพลงที่น่าทึ่งแล้วหรือยัง?*'
                 ].join('\n'))
                 .setColor(0x9966ff) 
                 .addFields(
                     {
-                        name: '🎯 Quick Examples',
+                        name: '📝 ตัวอย่างสั้นๆ',
                         value: [
-                            '• `shape of you`',
-                            '• `lofi hip hop beats`',
-                            '• `https://youtu.be/dQw4w9WgXcQ`',
-                            '• `imagine dragons believer`'
+                            '• `พิมชื่อเพลง "ขอเวลาลืม"`',
+                            '• `https://youtu.be/dQw4w9WgXcQ`'
                         ].join('\n'),
                         inline: true
                     },
                     {
-                        name: '🚀 Features',
+                        name: '🍼 คุณสมบัติ',
                         value: [
-                            '• 🎵 High quality audio',
-                            '• 📜 Queue management', 
-                            '• 🔁 Loop & shuffle modes',
-                            '• 🎛️ Volume controls',
-                            '• ⚡ Lightning fast search'
+                            '• 🎵 เสียงคุณภาพสูง',
+                            '• 📜 การจัดการคิว', 
+                            '• 🔁 โหมดวนซ้ำและสุ่ม',
+                            '• 🎛️ ปุ่มปรับระดับเสียง',
+                            '• ⚡ ค้นหาเร็วปานสายฟ้าแลบ'
                         ].join('\n'),
                         inline: true
                     },
                     {
-                        name: '💡 Pro Tips',
+                        name: '💡 เคล็ดลับสำหรับมืออาชีพ',
                         value: [
-                            '• Join voice channel first',
-                            '• Use specific song names',
-                            '• Try artist + song combo',
-                            '• Playlists are supported!'
+                            '• เข้าร่วมช่องเสียงก่อน',
+                            '• ใช้ชื่อเพลงที่เฉพาะเจาะจง',
+                            '• ลองใช้การจับคู่ศิลปิน + เพลง',
+                            '• รองรับเพลย์ลิสต์!'
                         ].join('\n'),
                         inline: false
                     }
                 )
                 .setImage('https://i.ibb.co/DDSdKy31/ezgif-8aec7517f2146d.gif')
                 .setFooter({ 
-                    text: 'Ultimate Music Bot • Developed By GlaceYT!',
+                    text: 'ไอคิวย์ มิวสิค • Developed TH!',
                     iconURL: this.client.user.displayAvatarURL()
                 })
                 .setTimestamp();
@@ -81,10 +79,10 @@ class CentralEmbedHandler {
                 'centralSetup.channelId': channelId
             });
 
-            console.log(`✅ Central embed created in ${guildId}`);
+            console.log(`✅ สร้างการฝังส่วนกลางใน ${guildId}`);
             return message;
         } catch (error) {
-            console.error('Error creating central embed:', error);
+            console.error('เกิดข้อผิดพลาดในการสร้างการฝังส่วนกลาง:', error);
             return null;
         }
     }
@@ -103,7 +101,7 @@ class CentralEmbedHandler {
                 try {
                     const guild = this.client.guilds.cache.get(serverConfig._id);
                     if (!guild) {
-                        console.log(`⚠️ Bot no longer in guild ${serverConfig._id}, cleaning up database...`);
+                        console.log(`⚠️ บอทไม่อยู่ในกิลด์แล้ว ${serverConfig._id}, การล้างฐานข้อมูล...`);
                         await Server.findByIdAndUpdate(serverConfig._id, {
                             'centralSetup.enabled': false,
                             'centralSetup.embedId': null
@@ -113,7 +111,7 @@ class CentralEmbedHandler {
 
                     const channel = await this.client.channels.fetch(serverConfig.centralSetup.channelId).catch(() => null);
                     if (!channel) {
-                        console.log(`⚠️ Central channel not found in ${guild.name}, cleaning up...`);
+                        console.log(`⚠️ ไม่พบช่องสัญญาณกลางใน ${guild.name}, การทำความสะอาด...`);
                         await Server.findByIdAndUpdate(serverConfig._id, {
                             'centralSetup.enabled': false,
                             'centralSetup.embedId': null
@@ -123,13 +121,13 @@ class CentralEmbedHandler {
 
                     const botMember = guild.members.me;
                     if (!channel.permissionsFor(botMember).has(['SendMessages', 'EmbedLinks'])) {
-                        console.log(`⚠️ Missing permissions in ${guild.name}, skipping...`);
+                        console.log(`⚠️ ขาดสิทธิ์ใน ${guild.name}, การข้าม...`);
                         continue;
                     }
 
                     const message = await channel.messages.fetch(serverConfig.centralSetup.embedId).catch(() => null);
                     if (!message) {
-                        console.log(`⚠️ Central embed not found in ${guild.name}, creating new one...`);
+                        console.log(`⚠️ ไม่พบการฝังส่วนกลางใน ${guild.name}, สร้างอันใหม่...`);
                         const newMessage = await this.createCentralEmbed(channel.id, guild.id);
                         if (newMessage) {
                             resetCount++;
@@ -154,7 +152,7 @@ class CentralEmbedHandler {
             }
 
         } catch (error) {
-            console.error('❌ Error during central embed auto-reset:', error);
+            console.error('❌ เกิดข้อผิดพลาดระหว่างการรีเซ็ตอัตโนมัติของระบบฝังตัวส่วนกลาง:', error);
         }
     }
 
@@ -180,21 +178,21 @@ class CentralEmbedHandler {
                     .setAuthor({ 
                         name: `${trackInfo.title}`, 
                         iconURL: 'https://cdn.discordapp.com/emojis/896724352949706762.gif',
-                        url: 'https://discord.gg/xQF9f9yUEM' 
+                        url: 'https://www.facebook.com/share/1Dg1UJB5hC/' 
                     })
                     .setDescription([
-                        `**🎤 Artist:** ${trackInfo.author}`,
-                        `**👤 Requested by:** <@${trackInfo.requester.id}>`,
+                        `**🎤 ศิลปิน:** ${trackInfo.author}`,
+                        `**👤 คนเปิดเพลง:** <@${trackInfo.requester.id}>`,
                         '',
-                        `⏰ **Duration:** \`${this.formatDuration(trackInfo.duration)}\``,
+                        `⏰ **ระยะเวลา:** \`${this.formatDuration(trackInfo.duration)}\``,
                         `${loopEmoji} **Loop:** \`${trackInfo.loop || 'Off'}\``,
-                        `🔊 **Volume:** \`${trackInfo.volume || 50}%\``,
+                        `🔊 **ระดับเสียง:** \`${trackInfo.volume || 50}%\``,
                         '',
-                        '🎶 *Enjoying the vibes? Type more song names below to keep the party going!*'
+                        '🎶 *กำลังสนุกกับบรรยากาศอยู่ใช่ไหม? พิมพ์ชื่อเพลงเพิ่มเติมด้านล่างเพื่อปาร์ตี้กันต่อ!*'
                     ].join('\n'))
                     .setColor(embedColor)
                     .setFooter({ 
-                        text: `Ultimate Music Bot • ${statusText} • Developed By GlaceYT`,
+                        text: `ไอคิว มิวสิค • ${statusText} • Developed TH`,
                         iconURL: this.client.user.displayAvatarURL()
                     })
                     .setTimestamp();
@@ -213,51 +211,49 @@ class CentralEmbedHandler {
             } else {
                
                 embed = new EmbedBuilder()
-                .setAuthor({ name: 'Ultimate Music Control Center', iconURL: 'https://cdn.discordapp.com/emojis/896724352949706762.gif', url: 'https://discord.gg/xQF9f9yUEM' })
+                .setAuthor({ name: 'ไอคิวย์ มิวสิค ศูนย์ควบคุม', iconURL: 'https://cdn.discordapp.com/emojis/896724352949706762.gif', url: 'https://www.facebook.com/share/1Dg1UJB5hC/' })
                 .setDescription([
                     '',
-                    '- Simply type a **song name** or **YouTube link** to start the party!',
-                    '- In free version I only support **YouTube** only.',
+                    '- เพียงแค่พิมพ์ **ชื่อเพลง** หรือ **ลิงก์ YouTube** เพื่อเริ่มงานปาร์ตี้!',
+                    '- รองรับเฉพาะ **YouTube** เท่านั้น.',
                     '',
-                    '✨ *Ready to fill this place with amazing music?*'
+                    '✨ *พร้อมที่จะเติมเต็มสถานที่แห่งนี้ด้วยเสียงเพลงที่น่าทึ่งแล้วหรือยัง?*'
                 ].join('\n'))
                 .setColor(0x9966ff) 
                 .addFields(
                     {
-                        name: '🎯 Quick Examples',
+                        name: '📝 ตัวอย่างสั้นๆ',
                         value: [
-                            '• `shape of you`',
-                            '• `lofi hip hop beats`',
-                            '• `https://youtu.be/dQw4w9WgXcQ`',
-                            '• `imagine dragons believer`'
+                            '• `พิมชื่อเพลง "ขอเวลาลืม"`',
+                            '• `https://youtu.be/dQw4w9WgXcQ`'
                         ].join('\n'),
                         inline: true
                     },
                     {
-                        name: '🚀 Features',
+                        name: '🍼 คุณสมบัติ',
                         value: [
-                            '• 🎵 High quality audio',
-                            '• 📜 Queue management', 
-                            '• 🔁 Loop & shuffle modes',
-                            '• 🎛️ Volume controls',
-                            '• ⚡ Lightning fast search'
+                            '• 🎵 เสียงคุณภาพสูง',
+                            '• 📜 การจัดการคิว', 
+                            '• 🔁 โหมดวนซ้ำและสุ่ม',
+                            '• 🎛️ ปุ่มปรับระดับเสียง',
+                            '• ⚡ ค้นหาเร็วปานสายฟ้าแลบ'
                         ].join('\n'),
                         inline: true
                     },
                     {
-                        name: '💡 Pro Tips',
+                        name: '💡 เคล็ดลับสำหรับมืออาชีพ',
                         value: [
-                            '• Join voice channel first',
-                            '• Use specific song names',
-                            '• Try artist + song combo',
-                            '• Playlists are supported!'
+                            '• เข้าร่วมช่องเสียงก่อน',
+                            '• ใช้ชื่อเพลงที่เฉพาะเจาะจง',
+                            '• ลองใช้การจับคู่ศิลปิน + เพลง',
+                            '• รองรับเพลย์ลิสต์!'
                         ].join('\n'),
                         inline: false
                     }
                 )
                 .setImage('https://i.ibb.co/DDSdKy31/ezgif-8aec7517f2146d.gif')
                 .setFooter({ 
-                    text: 'Ultimate Music Bot • Developed By GlaceYT!',
+                    text: 'ไอคิวย์ มิวสิค • Developed TH!',
                     iconURL: this.client.user.displayAvatarURL()
                 })
                 .setTimestamp();
@@ -268,7 +264,7 @@ class CentralEmbedHandler {
             await message.edit({ embeds: [embed], components });
 
         } catch (error) {
-            console.error('Error updating central embed:', error);
+            console.error('เกิดข้อผิดพลาดในการอัปเดตการฝังส่วนกลาง:', error);
         }
     }
 
