@@ -6,13 +6,13 @@ const COMMAND_SECURITY_TOKEN = shiva.SECURITY_TOKEN;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('resume')
-        .setDescription('Resume the paused music'),
+        .setDescription('เล่นเพลงที่หยุดไว้ต่อ'),
     securityToken: COMMAND_SECURITY_TOKEN,
 
     async execute(interaction, client) {
         if (!shiva || !shiva.validateCore || !shiva.validateCore()) {
             const embed = new EmbedBuilder()
-                .setDescription('❌ System core offline - Command unavailable')
+                .setDescription('❌ ระบบหลักออฟไลน์ - คำสั่งไม่พร้อมใช้งาน')
                 .setColor('#FF0000');
             return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
         }
@@ -33,13 +33,13 @@ module.exports = {
             );
 
             if (!conditions.hasActivePlayer) {
-                const embed = new EmbedBuilder().setDescription('❌ No music is currently playing!');
+                const embed = new EmbedBuilder().setDescription('❌ ขณะนี้ไม่มีเพลงกำลังเล่นอยู่!');
                 return interaction.editReply({ embeds: [embed] })
                     .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
             }
 
             if (!conditions.isPaused) {
-                const embed = new EmbedBuilder().setDescription('❌ Music is not paused!');
+                const embed = new EmbedBuilder().setDescription('❌ เพลงไม่ได้หยุดชั่วคราว!');
                 return interaction.editReply({ embeds: [embed] })
                     .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
             }
@@ -47,13 +47,13 @@ module.exports = {
             const player = conditions.player;
             player.pause(false);
 
-            const embed = new EmbedBuilder().setDescription('▶️ Music resumed!');
+            const embed = new EmbedBuilder().setDescription('▶️ ดนตรีกลับมาบรรเลงอีกครั้ง!');
             return interaction.editReply({ embeds: [embed] })
                 .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
                 
         } catch (error) {
             console.error('Resume command error:', error);
-            const embed = new EmbedBuilder().setDescription('❌ An error occurred while resuming music!');
+            const embed = new EmbedBuilder().setDescription('❌ เกิดข้อผิดพลาดขณะเล่นเพลงต่อ!');
             return interaction.editReply({ embeds: [embed] })
                 .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
         }

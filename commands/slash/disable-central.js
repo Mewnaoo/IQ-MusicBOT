@@ -7,14 +7,14 @@ const COMMAND_SECURITY_TOKEN = shiva.SECURITY_TOKEN;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('disable-central')
-        .setDescription('Disable the central music system')
+        .setDescription('ปิดใช้งานระบบเสียงส่วนกลาง')
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
     securityToken: COMMAND_SECURITY_TOKEN,
 
     async execute(interaction, client) {
         if (!shiva || !shiva.validateCore || !shiva.validateCore()) {
             const embed = new EmbedBuilder()
-                .setDescription('❌ System core offline - Command unavailable')
+                .setDescription('❌ ระบบหลักออฟไลน์ - คำสั่งไม่พร้อมใช้งาน')
                 .setColor('#FF0000');
             return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
         }
@@ -31,7 +31,7 @@ module.exports = {
             
             if (!serverConfig?.centralSetup?.enabled) {
                 return interaction.editReply({
-                    content: '❌ Central music system is not currently setup!',
+                    content: '❌ ระบบเสียงส่วนกลางยังไม่ได้ติดตั้งในขณะนี้!',
                     ephemeral: true
                 });
             }
@@ -41,7 +41,7 @@ module.exports = {
                 const message = await channel.messages.fetch(serverConfig.centralSetup.embedId);
                 await message.delete();
             } catch (error) {
-                console.log('Central embed already deleted or inaccessible');
+                console.log('ส่วนประกอบหลักถูกลบไปแล้วหรือไม่สามารถเข้าถึงได้');
             }
 
             await Server.findByIdAndUpdate(guildId, {
@@ -51,10 +51,10 @@ module.exports = {
             });
 
             const embed = new EmbedBuilder()
-                .setTitle('✅ Central Music System Disabled')
-                .setDescription('The central music system has been disabled and embed removed.')
+                .setTitle('✅ ระบบเสียงกลางถูกปิดใช้งาน')
+                .setDescription('ระบบเสียงส่วนกลางถูกปิดใช้งานและระบบฝังตัวถูกถอดออกแล้ว.')
                 .setColor(0xFF6B6B)
-                .setFooter({ text: 'You can re-enable it anytime with /setup-central' });
+                .setFooter({ text: 'คุณสามารถเปิดใช้งานอีกครั้งได้ทุกเมื่อด้วย /setup-central' });
 
             await interaction.editReply({ embeds: [embed] });
 
@@ -62,7 +62,7 @@ module.exports = {
             console.error('Error disabling central system:', error);
             
             await interaction.editReply({
-                content: '❌ An error occurred while disabling the central music system!',
+                content: '❌ เกิดข้อผิดพลาดขณะปิดใช้งานระบบเสียงส่วนกลาง!',
                 ephemeral: true
             });
         }

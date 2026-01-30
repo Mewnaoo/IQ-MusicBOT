@@ -6,10 +6,10 @@ const COMMAND_SECURITY_TOKEN = shiva.SECURITY_TOKEN;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('play')
-        .setDescription('Play a song or add to queue')
+        .setDescription('เล่นเพลงหรือเพิ่มลงในคิว')
         .addStringOption(option =>
             option.setName('query')
-                .setDescription('Song name, URL, or search query')
+                .setDescription('ชื่อเพลง URL หรือคำค้นหา')
                 .setRequired(true)
         ),
     securityToken: COMMAND_SECURITY_TOKEN,
@@ -17,7 +17,7 @@ module.exports = {
     async execute(interaction, client) {
         if (!shiva || !shiva.validateCore || !shiva.validateCore()) {
             const embed = new EmbedBuilder()
-                .setDescription('❌ System core offline - Command unavailable')
+                .setDescription('❌ ระบบหลักออฟไลน์ - คำสั่งไม่พร้อมใช้งาน')
                 .setColor('#FF0000');
             return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
         }
@@ -58,15 +58,15 @@ module.exports = {
             const result = await playerHandler.playSong(player, query, interaction.user);
 
             if (result.type === 'track') {
-                const embed = new EmbedBuilder().setDescription(`✅ Added to queue: **${result.track.info.title}**`);
+                const embed = new EmbedBuilder().setDescription(`✅ เพิ่มลงในคิวแล้ว: **${result.track.info.title}**`);
                 return interaction.editReply({ embeds: [embed] })
                     .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
             } else if (result.type === 'playlist') {
-                const embed = new EmbedBuilder().setDescription(`✅ Added **${result.tracks}** songs from playlist: **${result.name}**`);
+                const embed = new EmbedBuilder().setDescription(`✅ เพิ่มแล้ว **${result.tracks}** เพลงจากเพลย์ลิสต์: **${result.name}**`);
                 return interaction.editReply({ embeds: [embed] })
                     .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
             } else {
-                const embed = new EmbedBuilder().setDescription('❌ No results found for your query!');
+                const embed = new EmbedBuilder().setDescription('❌ ไม่พบผลลัพธ์สำหรับการค้นหาของคุณ!');
                 return interaction.editReply({ embeds: [embed] })
                     .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
             }
@@ -74,7 +74,7 @@ module.exports = {
         } catch (error) {
             console.error('Play slash command error:', error);
             ErrorHandler.handle(error, 'play slash command');
-            const embed = new EmbedBuilder().setDescription('❌ An error occurred while trying to play music!');
+            const embed = new EmbedBuilder().setDescription('❌ เกิดข้อผิดพลาดขณะพยายามเล่นเพลง!');
             return interaction.editReply({ embeds: [embed] })
                 .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
         }

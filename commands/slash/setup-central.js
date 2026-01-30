@@ -8,15 +8,15 @@ const COMMAND_SECURITY_TOKEN = shiva.SECURITY_TOKEN;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setup-central')
-        .setDescription('Setup the central music system in current channel')
+        .setDescription('ตั้งค่าระบบเสียงส่วนกลางในช่องสัญญาณปัจจุบัน')
         .addChannelOption(option =>
             option.setName('voice-channel')
-                .setDescription('Voice channel for music (optional)')
+                .setDescription('ช่องเสียงสำหรับเพลง (optional)')
                 .addChannelTypes(ChannelType.GuildVoice)
                 .setRequired(false))
         .addRoleOption(option =>
             option.setName('allowed-role')
-                .setDescription('Role allowed to use central system (optional)')
+                .setDescription('บทบาทที่ได้รับอนุญาตให้ใช้ระบบส่วนกลาง (optional)')
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
     securityToken: COMMAND_SECURITY_TOKEN,
@@ -24,7 +24,7 @@ module.exports = {
     async execute(interaction, client) {
         if (!shiva || !shiva.validateCore || !shiva.validateCore()) {
             const embed = new EmbedBuilder()
-                .setDescription('❌ System core offline - Command unavailable')
+                .setDescription('❌ ระบบหลักออฟไลน์ - คำสั่งไม่พร้อมใช้งาน')
                 .setColor('#FF0000');
             return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
         }
@@ -44,7 +44,7 @@ module.exports = {
             
             if (serverConfig?.centralSetup?.enabled) {
                 return interaction.editReply({
-                    content: '❌ Central music system is already setup! Use `/disable-central` first to reset.',
+                    content: '❌ ระบบเสียงส่วนกลางติดตั้งเรียบร้อยแล้ว! ใช้งานได้เลย! `/disable-central` ขั้นแรกต้องรีเซ็ต.',
                     ephemeral: true
                 });
             }
@@ -54,7 +54,7 @@ module.exports = {
             
             if (!channel.permissionsFor(botMember).has(['SendMessages', 'EmbedLinks', 'ManageMessages'])) {
                 return interaction.editReply({
-                    content: '❌ I need `Send Messages`, `Embed Links`, and `Manage Messages` permissions in this channel!',
+                    content: '❌ ฉันต้องการ `ส่งข้อความ``, `ฝังลิงก์`, และ `จัดการข้อความ` !',
                     ephemeral: true
                 });
             }
@@ -64,7 +64,7 @@ module.exports = {
             
             if (!embedMessage) {
                 return interaction.editReply({
-                    content: '❌ Failed to create central embed!',
+                    content: '❌ ไม่สามารถสร้างการฝังส่วนกลางได้!',
                     ephemeral: true
                 });
             }
@@ -87,31 +87,31 @@ module.exports = {
             });
 
             const successEmbed = new EmbedBuilder()
-                .setTitle('✅ Central Music System Setup Complete!')
-                .setDescription(`Central music control has been setup in <#${channelId}>`)
+                .setTitle('✅ การติดตั้งระบบเสียงกลางเสร็จสมบูรณ์!')
+                .setDescription(`ได้มีการจัดตั้งระบบควบคุมดนตรีส่วนกลางขึ้นแล้ว <#${channelId}>`)
                 .addFields(
-                    { name: '📍 Channel', value: `<#${channelId}>`, inline: true },
-                    { name: '🔊 Voice Channel', value: voiceChannel ? `<#${voiceChannel.id}>` : 'Not set', inline: true },
-                    { name: '👥 Allowed Role', value: allowedRole ? `<@&${allowedRole.id}>` : 'Everyone', inline: true }
+                    { name: '📍 ห้องแชต', value: `<#${channelId}>`, inline: true },
+                    { name: '🔊 ห้องเปิดไมค์', value: voiceChannel ? `<#${voiceChannel.id}>` : 'Not set', inline: true },
+                    { name: '👥 บทบาทที่ได้รับอนุญาต', value: allowedRole ? `<@&${allowedRole.id}>` : 'Everyone', inline: true }
                 )
                 .setColor(0x00FF00)
-                .setFooter({ text: 'Users can now type song names in the channel to play music!' });
+                .setFooter({ text: 'ขณะนี้ผู้ใช้สามารถพิมพ์ชื่อเพลงในช่องเพื่อเล่นเพลงได้แล้ว!' });
 
             await interaction.editReply({ embeds: [successEmbed] });
 
             setTimeout(async () => {
                 try {
                     const usageEmbed = new EmbedBuilder()
-                        .setTitle('🎵 Central Music System Active!')
+                        .setTitle('🎵 ระบบดนตรีกลางแบบแอคทีฟ!')
                         .setDescription(
-                            '• Type any **song name** to play music\n' +
-                            '• Links (YouTube, Spotify) are supported\n' +
-                            '• Other messages will be auto-deleted\n' +
-                            '• Use normal commands (`!play`, `/play`) in other channels\n\n' +
-                            '⚠️ This message will be automatically deleted in 10 seconds!'
+                            '• พิมพ์ชื่อเพลงใดก็ได้เพื่อเล่นเพลง\n' +
+                            '• ลิงก์ (YouTube) \n' +
+                            '• ข้อความอื่นๆ จะถูกลบโดยอัตโนมัติ\n' +
+                            '• ใช้คำสั่งปกติ (`!play`, `/play`) ในช่องทางอื่นๆ\n\n' +
+                            '⚠️ ข้อความนี้จะถูกลบโดยอัตโนมัติใน 10 วินาที!'
                         )
                         .setColor(0x1DB954)
-                        .setFooter({ text: 'Enjoy your music!' });
+                        .setFooter({ text: 'ขอให้คุณสนุกกับเสียงเพลง!' });
             
                     const msg = await channel.send({ embeds: [usageEmbed] });
             
@@ -130,7 +130,7 @@ module.exports = {
             console.error('Error setting up central system:', error);
             
             await interaction.editReply({
-                content: '❌ An error occurred while setting up the central music system!',
+                content: '❌ เกิดข้อผิดพลาดขณะตั้งค่าระบบเสียงส่วนกลาง!',
                 ephemeral: true
             });
         }

@@ -6,13 +6,13 @@ const COMMAND_SECURITY_TOKEN = shiva.SECURITY_TOKEN;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('skip')
-        .setDescription('Skip the current song'),
+        .setDescription('ข้ามเพลงปัจจุบัน'),
     securityToken: COMMAND_SECURITY_TOKEN,
 
     async execute(interaction, client) {
         if (!shiva || !shiva.validateCore || !shiva.validateCore()) {
             const embed = new EmbedBuilder()
-                .setDescription('❌ System core offline - Command unavailable')
+                .setDescription('❌ ระบบหลักออฟไลน์ - คำสั่งไม่พร้อมใช้งาน')
                 .setColor('#FF0000');
             return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
         }
@@ -44,13 +44,13 @@ module.exports = {
 
             player.stop();
 
-            const embed = new EmbedBuilder().setDescription(`⏭️ Skipped: **${currentTrack}**`);
+            const embed = new EmbedBuilder().setDescription(`⏭️ ข้ามไป: **${currentTrack}**`);
             return interaction.editReply({ embeds: [embed] })
                 .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
 
         } catch (error) {
             console.error('Skip command error:', error);
-            const embed = new EmbedBuilder().setDescription('❌ An error occurred while skipping the song!');
+            const embed = new EmbedBuilder().setDescription('❌ เกิดข้อผิดพลาดขณะข้ามเพลง!');
             return interaction.editReply({ embeds: [embed] })
                 .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
         }

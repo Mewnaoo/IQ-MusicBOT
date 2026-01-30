@@ -6,10 +6,10 @@ const COMMAND_SECURITY_TOKEN = shiva.SECURITY_TOKEN;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('queue')
-        .setDescription('Show the music queue')
+        .setDescription('แสดงคิวเพลง')
         .addIntegerOption(option =>
             option.setName('page')
-                .setDescription('Queue page number')
+                .setDescription('หมายเลขหน้าคิว')
                 .setMinValue(1)
                 .setRequired(false)
         ),
@@ -18,7 +18,7 @@ module.exports = {
     async execute(interaction, client) {
         if (!shiva || !shiva.validateCore || !shiva.validateCore()) {
             const embed = new EmbedBuilder()
-                .setDescription('❌ System core offline - Command unavailable')
+                .setDescription('❌ ระบบหลักออฟไลน์ - คำสั่งไม่พร้อมใช้งาน')
                 .setColor('#FF0000');
             return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
         }
@@ -39,7 +39,7 @@ module.exports = {
             );
 
             if (!conditions.hasActivePlayer) {
-                const embed = new EmbedBuilder().setDescription('❌ No music is currently playing!');
+                const embed = new EmbedBuilder().setDescription('❌ ขณะนี้ไม่มีเพลงกำลังเล่นอยู่!');
                 return interaction.editReply({ embeds: [embed] })
                     .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
             }
@@ -49,7 +49,7 @@ module.exports = {
             const currentTrack = player.current;
 
             if (!currentTrack && queue.size === 0) {
-                const embed = new EmbedBuilder().setDescription('📜 Queue is empty!');
+                const embed = new EmbedBuilder().setDescription('📜 คิวว่างเปล่า!');
                 return interaction.editReply({ embeds: [embed] })
                     .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
             }
@@ -64,24 +64,24 @@ module.exports = {
 
             if (currentTrack) {
                 const duration = formatDuration(currentTrack.info.length);
-                description += `🎵 **Now Playing**\n**${currentTrack.info.title}**\nBy: ${currentTrack.info.author}\nDuration: ${duration}\nRequested by: <@${currentTrack.info.requester.id}>\n\n`;
+                description += `🎵 **กำลังเล่น**\n**${currentTrack.info.title}**\nโดย: ${currentTrack.info.author}\nระยะเวลา: ${duration}\nตามคำขอของ: <@${currentTrack.info.requester.id}>\n\n`;
             }
 
             if (queue.size > 0) {
                 const queueTracks = Array.from(queue).slice(startIndex, endIndex);
                 if (queueTracks.length > 0) {
-                    description += `📋 **Up Next (${queue.size} songs)**\n`;
+                    description += `📋 **ถัดไป (${queue.size} เพลง)**\n`;
                     description += queueTracks.map((track, index) => {
                         const position = startIndex + index + 1;
                         const duration = formatDuration(track.info.length);
-                        return `\`${position}.\` **${track.info.title}** \`[${duration}]\`\nRequested by: <@${track.info.requester.id}>`;
+                        return `\`${position}.\` **${track.info.title}** \`[${duration}]\`\nตามคำขอของ: <@${track.info.requester.id}>`;
                     }).join('\n\n');
                 }
 
                 if (totalPages > 1) {
-                    description += `\n\nPage ${page}/${totalPages}`;
+                    description += `\n\nหน้าหนังสือ ${page}/${totalPages}`;
                 } else {
-                    description += `\n\nTotal: ${queue.size} songs in queue`;
+                    description += `\n\nทั้งหมด: ${queue.size} เพลงในคิว`;
                 }
             }
 
@@ -91,7 +91,7 @@ module.exports = {
 
         } catch (error) {
             console.error('Queue command error:', error);
-            const embed = new EmbedBuilder().setDescription('❌ An error occurred while fetching the queue!');
+            const embed = new EmbedBuilder().setDescription('❌ เกิดข้อผิดพลาดขณะดึงข้อมูลคิว!');
             return interaction.editReply({ embeds: [embed] })
                 .then(() => setTimeout(() => interaction.deleteReply().catch(() => {}), 3000));
         }
