@@ -54,7 +54,7 @@ module.exports = {
                 .setTitle('✅ ระบบเสียงกลางถูกปิดใช้งาน')
                 .setDescription('ระบบเสียงส่วนกลางถูกปิดใช้งานและระบบฝังตัวถูกถอดออกแล้ว.')
                 .setColor(0xFF6B6B)
-                .setFooter({ text: 'คุณสามารถเปิดใช้งานอีกครั้งได้ทุกเมื่อด้วย /setup-central' });
+                .setFooter({ text: 'คุณสามารถเปิดใช้งานอีกครั้งได้ทุกเมื่อด้วย /สร้างห้องเพลง' });
 
             await interaction.editReply({ embeds: [embed] });
 
